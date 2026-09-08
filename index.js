@@ -79,6 +79,28 @@ app.post('/users', (req, res) => {
   });
 });
 
+app.delete('/users/:id', (req, res) => {
+  const users = readUsers();
+  const userId = parseInt(req.params.id);
+  const userIndex = users.findIndex(u => u.id === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const deletedUser = users.splice(userIndex, 1)[0];
+  writeUsers(users);
+
+  res.status(200).json({
+    success: true,
+    message: 'User deleted successfully',
+    data: deletedUser
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
